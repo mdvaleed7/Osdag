@@ -38,6 +38,7 @@ from ...Report_functions import *
 from ...design_report.reportGenerator_latex import CreateLatex
 
 import logging
+logger = logging.getLogger('Osdag')
 
 
 class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Part3_2002, Column):
