@@ -11,6 +11,7 @@ from importlib.resources import files
 
 PATH_TO_DATABASE = files("osdag.data.ResourceFiles.Database").joinpath("Intg_osdag.sqlite")
 
+from functools import lru_cache
 import sqlite3
 
 from .utils.common.other_standards import *
@@ -37,6 +38,7 @@ class OurLog(logging.Handler):
         self.key.append(msg)
 
 
+@lru_cache(maxsize=None)
 def connectdb1():
     """
     Function to fetch diameter values from Bolt Table
@@ -50,8 +52,10 @@ def connectdb1():
     for row in rows:
         lst.append(row)
     l2 = tuple_to_str_popup(lst)
+    conn.close()
     return l2
 
+@lru_cache(maxsize=None)
 def connectdb2():
     """
     Function to fetch diameter values from Bolt Table
@@ -65,9 +69,11 @@ def connectdb2():
     for row in rows:
         lst.append(row)
     l2 = tuple_to_str_popup(lst)
+    conn.close()
     return l2
 
 
+@lru_cache(maxsize=None)
 def connectdb(table_name, call_type="dropdown"):
 
     """
@@ -112,9 +118,11 @@ def connectdb(table_name, call_type="dropdown"):
     if table_name == "Material" and call_type == "dropdown":
         final_lst.append("Custom")
 
+    conn.close()
     return final_lst
 
 
+@lru_cache(maxsize=None)
 def connect_for_red(table_name):
 
     """
@@ -137,13 +145,15 @@ def connect_for_red(table_name):
         cursor = conn.execute("SELECT Designation FROM Columns WHERE Source = 'IS808_Old'")
 
     else:
+        conn.close()
         return []
+    
     rows = cursor.fetchall()
-
     for row in rows:
         lst.append(row)
 
     final_lst = tuple_to_str_red(lst)
+    conn.close()
     return final_lst
 
 

@@ -747,7 +747,7 @@ class OsdagMainWindow(QMainWindow):
     def Show_Girder_Design(self):
         if self.findChild(QRadioButton, 'Welded_Girder_Design').isChecked():
             self.hide()
-            self.ui2 = Ui_ModuleWindow(PlateGirderWelded, ' ')
+            self.ui2 = Ui_ModuleWindow(None, ' ')
             self.ui2.show()
             self.ui2.closed.connect(self.show)
 
