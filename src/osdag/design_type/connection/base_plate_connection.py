@@ -8018,7 +8018,10 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
                                                                                                 self.anchor_length_provided_out_report,
                                                                                                 round_up(self.anchor_length_provided_out_report, 5),
                                                                                                 self.anchor_length_min_out, self.nut_thk_out,
-                                                                                                connectivity='Moment Base Plate', case='Case2&3'), 'Pass')
+                                                                                                connectivity='Moment Base Plate', case='Case2&3',
+                                                                                                tau_o=self.tau_o, d_o=self.anchor_hole_dia_out,
+                                                                                                anchor_len_eq919=self.anchor_length_eq919_out,
+                                                                                                anchor_len_eq920=self.anchor_length_eq920_out), 'Pass')
                     self.report_check.append(t8)
                 else:
                     t8 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(0, 0, self.anchor_len_below_footing_out, 0, 0, 0, 0,
@@ -8078,7 +8081,10 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
                                                                                                 self.anchor_length_provided_in_report,
                                                                                                 round_up(self.anchor_length_provided_in_report, 5),
                                                                                                 self.anchor_length_min_in, self.nut_thk_in,
-                                                                                                connectivity='Moment Base Plate', case='Case2&3'),
+                                                                                                connectivity='Moment Base Plate', case='Case2&3',
+                                                                                                tau_o=self.tau_o, d_o=self.anchor_hole_dia_in,
+                                                                                                anchor_len_eq919=self.anchor_length_eq919_in,
+                                                                                                anchor_len_eq920=self.anchor_length_eq920_in),
                                'Pass')
                         self.report_check.append(t10)
                     else:
