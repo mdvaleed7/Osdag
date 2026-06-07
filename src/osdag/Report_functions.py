@@ -7101,7 +7101,7 @@ def anchor_len_above(grout_thk, plate_thk, plate_washer_thk, nut_thk, len):
 
 
 def anchor_len_below(bolt_tension, bearing_strength, len, anchor_len_calculated_out, anchor_provided_out, anchor_len_min_out, nut_thk,
-                     connectivity='Moment Base Plate', case='Case2&3'):
+                     connectivity='Moment Base Plate', case='Case2&3', tau_o=0, d_o=0, anchor_len_eq919=0, anchor_len_eq920=0):
     """ """
     bolt_tension = str(bolt_tension)
     bearing_strength = str(bearing_strength)
@@ -7109,8 +7109,21 @@ def anchor_len_below(bolt_tension, bearing_strength, len, anchor_len_calculated_
 
     length = Math(inline=True)
     if connectivity == 'Moment Base Plate' and case == 'Case2&3':
-        length.append(NoEscape(r'\begin{aligned} l_{2} &= \Bigg[\frac{T_{\text{db}}}{15.5\sqrt{f_{ck}}}\Bigg]^{0.67} \\'))
+        # Eq. 9.19: CCD method
+        length.append(NoEscape(r'\begin{aligned} & \textbf{Eq.~9.19~(CCD~Method):} \\'))
+        length.append(NoEscape(r' l_{2a} &= \Bigg[\frac{T_{\text{db}}}{15.5\sqrt{f_{ck}}}\Bigg]^{0.67} \\'))
         length.append(NoEscape(r' &= \Bigg[\frac{' + bolt_tension + r' \times 10^{3}}{15.5 \times \sqrt{' + bearing_strength + r'}}\Bigg]^{0.67} \\'))
+        length.append(NoEscape(r' &= ' + str(round(anchor_len_eq919, 2)) + r' \\ \\'))
+
+        # Eq. 9.20: Bond strength
+        length.append(NoEscape(r' & \textbf{Eq.~9.20~(Bond~Strength):} \\'))
+        length.append(NoEscape(r' l_{2b} &= \frac{T_{\text{db}}}{\tau_{o} \pi d_{o}} \\'))
+        length.append(NoEscape(r' &= \frac{' + bolt_tension + r' \times 10^{3}}{' + str(tau_o) + r' \times \pi \times ' + str(d_o) + r'} \\'))
+        length.append(NoEscape(r' &= ' + str(round(anchor_len_eq920, 2)) + r' \\ \\'))
+
+        # Max of both
+        length.append(NoEscape(r' l_{2} &= \max(l_{2a},~ l_{2b}) \\'))
+        length.append(NoEscape(r' &= \max(' + str(round(anchor_len_eq919, 2)) + r',~ ' + str(round(anchor_len_eq920, 2)) + r') \\'))
         length.append(NoEscape(r' &= ' + str(anchor_len_calculated_out) + r' \\'))
         length.append(NoEscape(r' &= ' + str(anchor_provided_out) + r' \\'))
 
@@ -7129,6 +7142,7 @@ def anchor_len_below(bolt_tension, bearing_strength, len, anchor_len_calculated_
         length.append(NoEscape(r'& [\text{Reference: IS 5624:1993, Table 1.}] \end{aligned}'))
 
     return length
+
 
 
 def anchor_range(anchor_len_min, anchor_len_max):

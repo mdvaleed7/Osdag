@@ -250,6 +250,11 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
         self.anchor_dia_provided_outside_flange = 'M20'
         self.anchor_dia_provided_inside_flange = []
         self.grout_thk = 50
+        self.tau_o = 1.75  # grout-concrete bond strength, N/mm^2 [Ref: Subramanian, Eq. 9.20]
+        self.anchor_length_eq919_out = 0.001  # h_ef from Eq. 9.19 (CCD method) - outside flange
+        self.anchor_length_eq919_in = 0.001  # h_ef from Eq. 9.19 (CCD method) - inside flange
+        self.anchor_length_eq920_out = 0.001  # h_ef from Eq. 9.20 (bond strength) - outside flange
+        self.anchor_length_eq920_in = 0.001  # h_ef from Eq. 9.20 (bond strength) - inside flange
         self.plate_washer_details = {}
         self.plate_washer_thk = 1
         self.nut_thk = 1
@@ -5258,16 +5263,33 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
                     self.anchor_length_provided_in = round(self.anchor_length_min_in, 2)  # mm
 
             else:
-                # length of anchor for cast-in situ anchor bolts (k = 15.5)
-                self.anchor_length_provided_out = (self.tension_capacity_anchor * 1000 /
-                                                   (15.5 * math.sqrt(self.bearing_strength_concrete / 0.45))) ** 0.67  # mm
+                # Eq. 9.19: length of anchor for cast-in situ anchor bolts (k = 15.5) [CCD method]
+                # N_u = k * sqrt(f_ck) * (h_ef)^1.5, solving for h_ef
+                self.anchor_length_eq919_out = (self.tension_capacity_anchor * 1000 /
+                                                (15.5 * math.sqrt(self.bearing_strength_concrete / 0.45))) ** 0.67  # mm
+
+                # Eq. 9.20: bond strength for grouted anchors
+                # N_bond = tau_o * pi * d_o * h_ef, solving for h_ef
+                self.anchor_length_eq920_out = (self.tension_capacity_anchor * 1000 /
+                                                (self.tau_o * math.pi * self.anchor_hole_dia_out))  # mm
+
+                # anchor length is the maximum from Eq. 9.19 and Eq. 9.20
+                self.anchor_length_provided_out = max(self.anchor_length_eq919_out, self.anchor_length_eq920_out)  # mm
                 self.anchor_length_provided_out_report = round(self.anchor_length_provided_out, 2)
                 self.anchor_length_provided_out = round_up(self.anchor_length_provided_out, 5)
                 self.anchor_length_provided_out = max(self.anchor_length_provided_out, self.anchor_length_min_out)
 
             if self.load_axial_tension > 0:
-                self.anchor_length_provided_in = (self.tension_capacity_anchor_uplift * 1000 /
-                                                  (15.5 * math.sqrt(self.bearing_strength_concrete / 0.45))) ** (0.67)  # mm
+                # Eq. 9.19: CCD method - inside flange
+                self.anchor_length_eq919_in = (self.tension_capacity_anchor_uplift * 1000 /
+                                               (15.5 * math.sqrt(self.bearing_strength_concrete / 0.45))) ** 0.67  # mm
+
+                # Eq. 9.20: bond strength - inside flange
+                self.anchor_length_eq920_in = (self.tension_capacity_anchor_uplift * 1000 /
+                                               (self.tau_o * math.pi * self.anchor_hole_dia_in))  # mm
+
+                # anchor length is the maximum from Eq. 9.19 and Eq. 9.20
+                self.anchor_length_provided_in = max(self.anchor_length_eq919_in, self.anchor_length_eq920_in)  # mm
                 self.anchor_length_provided_in_report = round(self.anchor_length_provided_in, 2)
                 self.anchor_length_provided_in = round_up(self.anchor_length_provided_in, 5)
                 self.anchor_length_provided_in = max(self.anchor_length_provided_in, self.anchor_length_min_in)
