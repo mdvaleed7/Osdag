@@ -7105,7 +7105,7 @@ def anchor_len_above(grout_thk, plate_thk, plate_washer_thk, nut_thk, len):
 
 
 def anchor_len_below(bolt_tension, bearing_strength, len, anchor_len_calculated_out, anchor_provided_out, anchor_len_min_out, nut_thk,
-                     connectivity='Moment Base Plate', case='Case2&3', tau_o=0, d_o=0, anchor_len_eq919=0, anchor_len_eq920=0):
+                     connectivity='Moment Base Plate', case='Case2&3', tau_o=0, d_o=0, anchor_len_eq919=0, anchor_len_eq920=0, n_a=1):
     """ """
     bolt_tension = str(bolt_tension)
     bearing_strength = str(bearing_strength)
@@ -7113,16 +7113,23 @@ def anchor_len_below(bolt_tension, bearing_strength, len, anchor_len_calculated_
 
     length = Math(inline=True)
     if connectivity == 'Moment Base Plate' and case == 'Case2&3':
+        if n_a > 1:
+            t_u_str = r'T_{u}/n_a'
+            t_u_val_str = r'(' + bolt_tension + r'/' + str(n_a) + r')'
+        else:
+            t_u_str = r'T_{u}'
+            t_u_val_str = bolt_tension
+
         # Eq. 9.19: CCD method
         length.append(NoEscape(r'\begin{aligned} & \textbf{Eq.~9.19~(CCD~Method):} \\'))
-        length.append(NoEscape(r' l_{2a} &= \Bigg[\frac{T_{u}}{15.5\sqrt{f_{ck}}}\Bigg]^{0.67} \\'))
-        length.append(NoEscape(r' &= \Bigg[\frac{' + bolt_tension + r' \times 10^{3}}{15.5 \times \sqrt{' + bearing_strength + r'}}\Bigg]^{0.67} \\'))
+        length.append(NoEscape(r' l_{2a} &= \Bigg[\frac{' + t_u_str + r'}{15.5\sqrt{f_{ck}}}\Bigg]^{0.67} \\'))
+        length.append(NoEscape(r' &= \Bigg[\frac{' + t_u_val_str + r' \times 10^{3}}{15.5 \times \sqrt{' + bearing_strength + r'}}\Bigg]^{0.67} \\'))
         length.append(NoEscape(r' &= ' + str(round(anchor_len_eq919, 2)) + r' \\ \\'))
 
         # Eq. 9.20: Bond strength
         length.append(NoEscape(r' & \textbf{Eq.~9.20~(Bond~Strength):} \\'))
-        length.append(NoEscape(r' l_{2b} &= \frac{T_{u}}{\tau_{o} \pi d_{o}} \\'))
-        length.append(NoEscape(r' &= \frac{' + bolt_tension + r' \times 10^{3}}{' + ('%g' % float(tau_o)) + r' \times \pi \times ' + ('%g' % float(d_o)) + r'} \\'))
+        length.append(NoEscape(r' l_{2b} &= \frac{' + t_u_str + r'}{\tau_{o} \pi d_{o}} \\'))
+        length.append(NoEscape(r' &= \frac{' + t_u_val_str + r' \times 10^{3}}{' + ('%g' % float(tau_o)) + r' \times \pi \times ' + ('%g' % float(d_o)) + r'} \\'))
         length.append(NoEscape(r' &= ' + str(round(anchor_len_eq920, 2)) + r' \\ \\'))
 
         # Max of both

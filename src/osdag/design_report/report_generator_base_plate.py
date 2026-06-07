@@ -413,14 +413,15 @@ class SaveDesignBP(BasePlateConnection):
         if self.connectivity == 'Moment Base Plate':
             if (self.moment_bp_case == 'Case2') or (self.moment_bp_case == 'Case3'):
 
-                t8 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(round(self.tension_demand_anchor / (self.anchors_outside_flange / 2), 2), int(self.bearing_strength_concrete / 0.45),
+                t8 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(round(self.tension_demand_anchor, 2), int(self.bearing_strength_concrete / 0.45),
                                                                                         self.anchor_len_below_footing, self.anchor_length_provided_report,
                                                                                         round_up(self.anchor_length_provided_report, 5),
                                                                                         self.anchor_length_min, self.nut_thk,
-                                                                                        connectivity='Moment Base Plate', case='Case2&3',
-                                                                                        tau_o=self.tau_o, d_o=self.anchor_hole_dia_out,
-                                                                                        anchor_len_eq919=self.anchor_length_eq919_out,
-                                                                                        anchor_len_eq920=self.anchor_length_eq920_out), 'N/A')
+                                                                                        self.connectivity, self.moment_bp_case,
+                                                                                        tau_o=self.tau_o, d_o=self.anchor_hole_dia,
+                                                                                        anchor_len_eq919=self.anchor_length_eq919,
+                                                                                        anchor_len_eq920=self.anchor_length_eq920,
+                                                                                        n_a=int(self.anchors_outside_flange / 2)), 'N/A')
                 self.report_check.append(t8)
             else:
                 t8 = ('Anchor Length - below concrete footing (mm)', '', 'l_{2} = ' + self.anchor_length_provided + '', 'N/A')
@@ -471,15 +472,16 @@ class SaveDesignBP(BasePlateConnection):
                 self.report_check.append(t9)
 
                 if (self.moment_bp_case == 'Case2') or (self.moment_bp_case == 'Case3'):
-                    t10 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(round(self.load_axial_tension / self.anchors_inside_flange, 2),
+                    t10 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(round(self.load_axial_tension, 2),
                                                                                int(self.bearing_strength_concrete / 0.45), self.anchor_len_below_footing,
                                                                                self.anchor_length_provided_report,
                                                                                round_up(self.anchor_length_provided_report, 5),
                                                                                self.anchor_length_min, self.nut_thk,
-                                                                               connectivity='Moment Base Plate', case='Case2&3',
-                                                                               tau_o=self.tau_o, d_o=self.anchor_hole_dia_in,
-                                                                               anchor_len_eq919=self.anchor_length_eq919_in,
-                                                                               anchor_len_eq920=self.anchor_length_eq920_in), 'N/A')
+                                                                               self.connectivity, self.moment_bp_case,
+                                                                               tau_o=self.tau_o, d_o=self.anchor_hole_dia,
+                                                                               anchor_len_eq919=self.anchor_length_eq919,
+                                                                               anchor_len_eq920=self.anchor_length_eq920,
+                                                                               n_a=int(self.anchors_inside_flange)), 'N/A')
                     self.report_check.append(t10)
                 else:
                     t10 = ('Anchor Length - below concrete footing (mm)', '', 'l_{2} = ' + self.anchor_length_provided + '', 'N/A')
