@@ -8013,7 +8013,7 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
                 if (self.moment_bp_case == 'Case2') or (self.moment_bp_case == 'Case3'):
 
                     t8 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(self.tension_capacity_anchor,
-                                                                                              (self.bearing_strength_concrete / 0.45),
+                                                                                              int(self.bearing_strength_concrete / 0.45),
                                                                                               self.anchor_len_below_footing_out,
                                                                                                 self.anchor_length_provided_out_report,
                                                                                                 round_up(self.anchor_length_provided_out_report, 5),
@@ -8076,7 +8076,7 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
 
                     if (self.moment_bp_case == 'Case2') or (self.moment_bp_case == 'Case3'):
                         t10 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(self.tension_capacity_anchor_uplift,
-                                                                                              (self.bearing_strength_concrete / 0.45),
+                                                                                              int(self.bearing_strength_concrete / 0.45),
                                                                                               self.anchor_len_below_footing_in,
                                                                                                 self.anchor_length_provided_in_report,
                                                                                                 round_up(self.anchor_length_provided_in_report, 5),
