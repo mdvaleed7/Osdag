@@ -7115,13 +7115,13 @@ def anchor_len_below(bolt_tension, bearing_strength, len, anchor_len_calculated_
     if connectivity == 'Moment Base Plate' and case == 'Case2&3':
         # Eq. 9.19: CCD method
         length.append(NoEscape(r'\begin{aligned} & \textbf{Eq.~9.19~(CCD~Method):} \\'))
-        length.append(NoEscape(r' l_{2a} &= \Bigg[\frac{T_{\text{db}}}{15.5\sqrt{f_{ck}}}\Bigg]^{0.67} \\'))
+        length.append(NoEscape(r' l_{2a} &= \Bigg[\frac{T_{u}}{15.5\sqrt{f_{ck}}}\Bigg]^{0.67} \\'))
         length.append(NoEscape(r' &= \Bigg[\frac{' + bolt_tension + r' \times 10^{3}}{15.5 \times \sqrt{' + bearing_strength + r'}}\Bigg]^{0.67} \\'))
         length.append(NoEscape(r' &= ' + str(round(anchor_len_eq919, 2)) + r' \\ \\'))
 
         # Eq. 9.20: Bond strength
         length.append(NoEscape(r' & \textbf{Eq.~9.20~(Bond~Strength):} \\'))
-        length.append(NoEscape(r' l_{2b} &= \frac{T_{\text{db}}}{\tau_{o} \pi d_{o}} \\'))
+        length.append(NoEscape(r' l_{2b} &= \frac{T_{u}}{\tau_{o} \pi d_{o}} \\'))
         length.append(NoEscape(r' &= \frac{' + bolt_tension + r' \times 10^{3}}{' + str(tau_o) + r' \times \pi \times ' + str(d_o) + r'} \\'))
         length.append(NoEscape(r' &= ' + str(round(anchor_len_eq920, 2)) + r' \\ \\'))
 

@@ -5279,14 +5279,15 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
                     self.anchor_length_provided_in = round(self.anchor_length_min_in, 2)  # mm
 
             else:
+                demand_out = self.tension_demand_anchor / (self.anchors_outside_flange / 2)
                 # Eq. 9.19: length of anchor for cast-in situ anchor bolts (k = 15.5) [CCD method]
                 # N_u = k * sqrt(f_ck) * (h_ef)^1.5, solving for h_ef
-                self.anchor_length_eq919_out = (self.tension_capacity_anchor * 1000 /
+                self.anchor_length_eq919_out = (demand_out * 1000 /
                                                 (15.5 * math.sqrt(self.bearing_strength_concrete / 0.45))) ** 0.67  # mm
 
                 # Eq. 9.20: bond strength for grouted anchors
                 # N_bond = tau_o * pi * d_o * h_ef, solving for h_ef
-                self.anchor_length_eq920_out = (self.tension_capacity_anchor * 1000 /
+                self.anchor_length_eq920_out = (demand_out * 1000 /
                                                 (self.tau_o * math.pi * self.anchor_hole_dia_out))  # mm
 
                 # anchor length is the maximum from Eq. 9.19 and Eq. 9.20
@@ -5296,12 +5297,13 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
                 self.anchor_length_provided_out = max(self.anchor_length_provided_out, self.anchor_length_min_out)
 
             if self.load_axial_tension > 0:
+                demand_in = self.load_axial_tension / self.anchors_inside_flange
                 # Eq. 9.19: CCD method - inside flange
-                self.anchor_length_eq919_in = (self.tension_capacity_anchor_uplift * 1000 /
+                self.anchor_length_eq919_in = (demand_in * 1000 /
                                                (15.5 * math.sqrt(self.bearing_strength_concrete / 0.45))) ** 0.67  # mm
 
                 # Eq. 9.20: bond strength - inside flange
-                self.anchor_length_eq920_in = (self.tension_capacity_anchor_uplift * 1000 /
+                self.anchor_length_eq920_in = (demand_in * 1000 /
                                                (self.tau_o * math.pi * self.anchor_hole_dia_in))  # mm
 
                 # anchor length is the maximum from Eq. 9.19 and Eq. 9.20
@@ -8012,7 +8014,7 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
             if self.connectivity == 'Moment Base Plate':
                 if (self.moment_bp_case == 'Case2') or (self.moment_bp_case == 'Case3'):
 
-                    t8 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(self.tension_capacity_anchor,
+                    t8 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(round(self.tension_demand_anchor / (self.anchors_outside_flange / 2), 2),
                                                                                               int(self.bearing_strength_concrete / 0.45),
                                                                                               self.anchor_len_below_footing_out,
                                                                                                 self.anchor_length_provided_out_report,
@@ -8075,7 +8077,7 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
                     self.report_check.append(t9)
 
                     if (self.moment_bp_case == 'Case2') or (self.moment_bp_case == 'Case3'):
-                        t10 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(self.tension_capacity_anchor_uplift,
+                        t10 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(round(self.load_axial_tension / self.anchors_inside_flange, 2),
                                                                                               int(self.bearing_strength_concrete / 0.45),
                                                                                               self.anchor_len_below_footing_in,
                                                                                                 self.anchor_length_provided_in_report,

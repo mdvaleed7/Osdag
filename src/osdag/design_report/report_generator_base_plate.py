@@ -413,7 +413,7 @@ class SaveDesignBP(BasePlateConnection):
         if self.connectivity == 'Moment Base Plate':
             if (self.moment_bp_case == 'Case2') or (self.moment_bp_case == 'Case3'):
 
-                t8 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(self.tension_capacity_anchor, int(self.bearing_strength_concrete / 0.45),
+                t8 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(round(self.tension_demand_anchor / (self.anchors_outside_flange / 2), 2), int(self.bearing_strength_concrete / 0.45),
                                                                                         self.anchor_len_below_footing, self.anchor_length_provided_report,
                                                                                         round_up(self.anchor_length_provided_report, 5),
                                                                                         self.anchor_length_min, self.nut_thk,
@@ -471,7 +471,7 @@ class SaveDesignBP(BasePlateConnection):
                 self.report_check.append(t9)
 
                 if (self.moment_bp_case == 'Case2') or (self.moment_bp_case == 'Case3'):
-                    t10 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(self.tension_capacity_anchor,
+                    t10 = ('Anchor Length - below concrete footing (mm)', '', anchor_len_below(round(self.load_axial_tension / self.anchors_inside_flange, 2),
                                                                                int(self.bearing_strength_concrete / 0.45), self.anchor_len_below_footing,
                                                                                self.anchor_length_provided_report,
                                                                                round_up(self.anchor_length_provided_report, 5),
