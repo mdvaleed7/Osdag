@@ -2738,7 +2738,7 @@ class Flexure(Member):
             #           ' ')
             #     self.report_check.append(t1)
 
-                t1 = ('$\phi_{LT}$', ' ',
+                t1 = (r'$\phi_{LT}$', ' ',
                       cl_8_2_2_phi(self.result_IF_lt,self.result_nd_esr_lt, self.result_phi_lt),
                       ' ')
                 self.report_check.append(t1)
@@ -2846,7 +2846,7 @@ class Flexure(Member):
                       ' ')
                 self.report_check.append(t1)
 
-                t1 = ('$\phi$', ' ',
+                t1 = (r'$\phi$', ' ',
                       cl_8_7_1_5_phi(0.49,self.result_eff_sr, self.result_phi_zz),
                       ' ')
                 self.report_check.append(t1)

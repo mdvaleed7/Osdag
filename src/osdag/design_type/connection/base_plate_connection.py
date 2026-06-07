@@ -4871,6 +4871,22 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
 
         Returns:
         """
+        try:
+            fck_val = int(str(self.footing_grade).replace('M', '').strip())
+            if fck_val <= 20:
+                tau_bd = 1.2
+            elif fck_val == 25:
+                tau_bd = 1.4
+            elif fck_val == 30:
+                tau_bd = 1.5
+            elif fck_val == 35:
+                tau_bd = 1.7
+            else:
+                tau_bd = 1.9
+        except:
+            tau_bd = 1.2
+        self.tau_o = 1.6 * tau_bd
+
         # updating the anchor area (provided outside flange), if the diameter is updated in the previous check(s)
         self.anchor_area_outside_flange = self.bolt_area(self.anchor_dia_provided_outside_flange)  # list of areas [shank area, thread area] mm^2
 
@@ -7183,7 +7199,7 @@ class BasePlateConnection(MomentConnection, IS800_2007, IS_5624_1993, IS1367_Par
             section_type = 'I Section'
 
         if self.dp_column_source == 'IS808_Rev':
-            self.dp_column_source = 'IS 808\_Rev'
+            self.dp_column_source = r'IS 808\_Rev'
 
         self.column_properties = {
             KEY_DISP_SEC_PROFILE: select_section_img,  # select image of the section for displaying in design report

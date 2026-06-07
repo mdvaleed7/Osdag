@@ -8,15 +8,15 @@ class Load(object):
             force_multiplier = 1e3
             moment_multiplier = 1e6
         print(force_multiplier, "is force multiplier")
-        if axial_force is not "":
+        if axial_force != "":
             self.axial_force = force_multiplier * float(axial_force)
         else:
             self.axial_force = 0.0
-        if shear_force is not "":
+        if shear_force != "":
             self.shear_force = force_multiplier * float(shear_force)
         else:
             self.shear_force = 0.0
-        if moment is not "":
+        if moment != "":
             self.moment = moment_multiplier * float(moment)
             self.moment_minor = moment_multiplier * float(moment_minor)
         else:
